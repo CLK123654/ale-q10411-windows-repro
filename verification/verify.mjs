@@ -81,7 +81,7 @@ async function auditPlatformFiles(root) {
 
 function xlsxSheetNames(file) {
   const escaped = file.replaceAll("'", "''");
-  const script = `Add-Type -AssemblyName System.IO.Compression.FileSystem; $z=[IO.Compression.ZipFile]::OpenRead('${escaped}'); try { $e=$z.GetEntry('xl/workbook.xml'); $r=[IO.StreamReader]::new($e.Open()); try { [xml]$x=$r.ReadToEnd(); @($x.workbook.sheets.sheet | ForEach-Object { $_.name }) | ConvertTo-Json -Compress } finally { $r.Dispose() } } finally { $z.Dispose() }`;
+  const script = `Add-Type -AssemblyName System.IO.Compression.FileSystem; $z=[IO.Compression.ZipFile]::OpenRead('${escaped}'); try { $e=$z.GetEntry('xl/workbook.xml'); $r=[IO.StreamReader]::new($e.Open()); try { [xml]$x=$r.ReadToEnd(); $n=[Xml.XmlNamespaceManager]::new($x.NameTable); $n.AddNamespace('x','http://schemas.openxmlformats.org/spreadsheetml/2006/main'); @($x.SelectNodes('/x:workbook/x:sheets/x:sheet',$n) | ForEach-Object { $_.GetAttribute('name') }) | ConvertTo-Json -Compress } finally { $r.Dispose() } } finally { $z.Dispose() }`;
   const result = spawn('pwsh', ['-NoLogo','-NoProfile','-Command',script]);
   requireSuccess(result, '工作簿页签读取');
   const parsed = JSON.parse(result.stdout.trim());
