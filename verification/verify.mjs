@@ -128,9 +128,20 @@ for (const [file, expected] of Object.entries(expectedAttachments)) {
   if (actual !== expected) throw new Error(`${file}哈希不一致`);
 }
 const staticReview = JSON.parse(await fs.readFile(path.join(repo, 'qa', 'static-review.json'), 'utf8'));
+const scoreAnswerLeak = JSON.parse(await fs.readFile(path.join(repo, 'qa', 'score-answer-leak.json'), 'utf8'));
+const candidateScore = await fs.readFile(path.join(repo, 'task', '评分表.txt'), 'utf8');
+const scoreLeakPatterns = [
+  /\b(?:E|I|D)[-_]?\d{2,}[A-Z0-9_-]*\b/giu,
+  /(?:完整|全部|通过|拒绝|合格|有效|入队)(?:样本|事件|关系|种子|设备|集合).{0,12}(?:为|包括|包含|：|:)/giu,
+  /(?:固定行数|固定汇总数|总计为|总数为|恰好|共计).{0,8}\d+|\d+个(?:样本|种子|关系|设备|结果)|\d+条(?:路径|关系|结果)/giu,
+  /(?:依次为|分别为|整组|逐项为).{0,80}(?:；|,|，).{0,20}(?:；|,|，)/giu,
+  /\bD\d+(?:>D\d+){1,}\b/giu
+];
+const currentScoreLeakHits = scoreLeakPatterns.flatMap((pattern) => [...candidateScore.matchAll(pattern)].map((match) => match[0]));
 const answerSheetNames = staticReview.answer_sheets;
 const specificationSheetNames = staticReview.specification_sheets;
 if (staticReview.result !== 'PASS' || staticReview.task_spec_column_count !== 2) throw new Error('静态门禁或任务规格列数不合格');
+if (!scoreAnswerLeak.pass || scoreAnswerLeak.hits.length !== 0 || currentScoreLeakHits.length !== 0) throw new Error('候选人评分表含有样本答案');
 if (JSON.stringify(answerSheetNames) !== JSON.stringify(['交付物答案清单','固定字段答案','固定集合答案','固定数值答案','允许变体答案'])) throw new Error('标答工作簿页签不符合固定契约');
 if (JSON.stringify(specificationSheetNames) !== JSON.stringify(['任务规格转化'])) throw new Error('任务规格工作簿页签不正确');
 
@@ -216,7 +227,8 @@ const evidence = {
   workbook_checks: {
     answer_sheet_names: answerSheetNames,
     specification_sheet_names: specificationSheetNames,
-    task_spec_column_count: staticReview.task_spec_column_count
+    task_spec_column_count: staticReview.task_spec_column_count,
+    candidate_score_answer_leak_hits: scoreAnswerLeak.hits.length
   },
   platform_audit: {
     linux_executables: linuxExecutables,
