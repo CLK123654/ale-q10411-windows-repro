@@ -1,4 +1,4 @@
-操作系统：Windows11、macOS或主流64位Linux。
+操作系统： Windows11、macOS或主流64位Linux。
 
 主软件需为SQLite3.40或更高兼容版本，并支持递归CTE、窗口函数、临时表、CSV导入、日期计算和完整性查询。Windows环境直接使用sqlite3.exe。Node.js20或更高版本及npm用于复制数据库、读取JSON规则、调用SQLite命令行并整理导出文件。
 
