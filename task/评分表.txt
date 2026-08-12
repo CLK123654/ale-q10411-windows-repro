@@ -3,7 +3,7 @@
 关键字段：output/device_risk_review.db、output/sql/rebuild_device_review.sql、sqlite_schema
 容差：SQL注释、缩进、临时表名和CTE拆分允许不同，交付路径及业务表名固定。
 失败边界：核心文件缺失或不可读，源表被改动，派生表缺失，或主要结果不是SQLite执行交付SQL所得。
-可观察证据：Reference成员、PRAGMA integrity_check、sqlite_schema及源表逐行对照。
+可观察证据：声明交付成员、PRAGMA integrity_check、sqlite_schema及源表逐行对照。
 客观硬性标准：五个交付文件存在且可读取，完整性返回ok，四张源表保持原样，七张派生表存在。
 阈值：四项条件全部成立。
 优先级：Gate项
