@@ -11,8 +11,8 @@ const sqlite = process.env.SQLITE3_PATH || 'sqlite3.exe';
 const expectedAttachments = {
   '输入数据包.zip': 'f2428e05e16a29933078607d79d8ce5d302eb4af3dabf04090332e5a3d93024b',
   'reference.zip': '487653834fdc5bcc365dd295951b840e5bfd1886dba3e911138883da20c63a1a',
-  '关键标准答案.xlsx': '9088dce2ba3881aa255693fcf329348fa014a1bddba512adc3071f10fb0ae372',
-  '任务规格转化.xlsx': 'b28a4657d1c6422098120dc9c07cfd11bc784bf0e53c49abb87301643f47a77e'
+  '关键标准答案.xlsx': 'fe8ecc93636d8ce50aff182a54c5dd049f4f03be5b41fb324da2d69833006b9c',
+  '任务规格转化.xlsx': '76668c84e01f55eb51cd98fa35c39fcc614409ab3b21112de0574fe06a35c0f3'
 };
 const deliveryFiles = [
   'output/device_risk_review.db',
