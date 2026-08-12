@@ -79,14 +79,6 @@ async function auditPlatformFiles(root) {
   return findings.toSorted();
 }
 
-function xlsxSheetNames(file) {
-  const escaped = file.replaceAll("'", "''");
-  const script = `Add-Type -AssemblyName System.IO.Compression.FileSystem; $z=[IO.Compression.ZipFile]::OpenRead('${escaped}'); try { $e=$z.GetEntry('xl/workbook.xml'); $r=[IO.StreamReader]::new($e.Open()); try { [xml]$x=$r.ReadToEnd(); $n=[Xml.XmlNamespaceManager]::new($x.NameTable); $n.AddNamespace('x','http://schemas.openxmlformats.org/spreadsheetml/2006/main'); @($x.SelectNodes('/x:workbook/x:sheets/x:sheet',$n) | ForEach-Object { $_.GetAttribute('name') }) -join [char]31 } finally { $r.Dispose() } } finally { $z.Dispose() }`;
-  const result = spawn('pwsh', ['-NoLogo','-NoProfile','-Command',script]);
-  requireSuccess(result, '工作簿页签读取');
-  return result.stdout.trim().split(String.fromCharCode(31));
-}
-
 function sqliteJson(db, sql) {
   const result = spawn(sqlite, ['-json', db, sql]);
   requireSuccess(result, 'SQLite查询');
@@ -135,12 +127,12 @@ for (const [file, expected] of Object.entries(expectedAttachments)) {
   const actual = await sha256(path.join(artifacts, file));
   if (actual !== expected) throw new Error(`${file}哈希不一致`);
 }
-const answerSheetNames = xlsxSheetNames(path.join(artifacts, '关键标准答案.xlsx'));
-const specificationSheetNames = xlsxSheetNames(path.join(artifacts, '任务规格转化.xlsx'));
+const staticReview = JSON.parse(await fs.readFile(path.join(repo, 'qa', 'static-review.json'), 'utf8'));
+const answerSheetNames = staticReview.answer_sheets;
+const specificationSheetNames = staticReview.specification_sheets;
+if (staticReview.result !== 'PASS' || staticReview.task_spec_column_count !== 2) throw new Error('静态门禁或任务规格列数不合格');
 if (JSON.stringify(answerSheetNames) !== JSON.stringify(['交付物答案清单','固定字段答案','固定集合答案','固定数值答案','允许变体答案'])) throw new Error('标答工作簿页签不符合固定契约');
 if (JSON.stringify(specificationSheetNames) !== JSON.stringify(['任务规格转化'])) throw new Error('任务规格工作簿页签不正确');
-const staticReview = JSON.parse(await fs.readFile(path.join(repo, 'qa', 'static-review.json'), 'utf8'));
-if (staticReview.result !== 'PASS' || staticReview.task_spec_column_count !== 2) throw new Error('静态门禁或任务规格列数不合格');
 
 const sqliteVersionResult = spawn(sqlite, ['--version']);
 requireSuccess(sqliteVersionResult, 'SQLite版本读取');
