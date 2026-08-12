@@ -1,4 +1,4 @@
-任务支持Windows11本机、macOS13及主流64位Linux。主软件为SQLite3.40或更高兼容版本，制题运行版本为SQLite3.51.2；必须真实执行递归CTE、窗口函数、临时策略表、CSV原生导入、日期计算与数据库完整性查询。文本检查或用Node.js重算路径不能替代SQLite。
+任务支持Windows11本机、macOS13及主流64位Linux。主软件为SQLite3.40或更高兼容版本，本次锁定SQLite3.51.2；必须真实执行递归CTE、窗口函数、临时策略表、CSV原生导入、日期计算与数据库完整性查询。文本检查或用Node.js重算路径不能替代SQLite。
 
 辅助工具为Node.js24和npm，用于复制数据库、读取JSON策略、调用SQLite命令行并整理导出文件。Windows11直接使用sqlite3.exe，不依赖WSL、Linux容器、Bash或POSIX专用接口。正式运行只访问input_data中的本地文件，不连接账号、设备或风控服务，也不加载SQLite外部扩展。
 
