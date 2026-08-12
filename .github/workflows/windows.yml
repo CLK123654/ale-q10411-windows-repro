@@ -1,0 +1,31 @@
+name: windows-2025
+
+on:
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: windows-2025
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+      - name: Install SQLite3.51.2
+        shell: pwsh
+        run: |
+          $archive = Join-Path $env:RUNNER_TEMP sqlite.zip
+          $tools = Join-Path $env:RUNNER_TEMP sqlite-tools
+          Invoke-WebRequest https://www.sqlite.org/2026/sqlite-tools-win-x64-3510200.zip -OutFile $archive
+          Expand-Archive $archive -DestinationPath $tools
+          $sqlite = Get-ChildItem $tools -Recurse -Filter sqlite3.exe | Select-Object -First 1 -ExpandProperty FullName
+          Add-Content $env:GITHUB_ENV "SQLITE3_PATH=$sqlite"
+      - name: Verify on Windows
+        shell: pwsh
+        run: node verification/verify.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: q10411-windows-evidence
+          path: evidence/windows-verification.json
+          retention-days: 1

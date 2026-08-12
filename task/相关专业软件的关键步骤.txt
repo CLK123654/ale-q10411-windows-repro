@@ -1,0 +1,8 @@
+1. 用sqlite3打开database/risk_graph.db，读取account_profile、device_registry、device_link_event和seed_incident的结构与关系。
+2. 由npm run rebuild把graph_policy.json和action_routes.csv导入同一SQLite会话，确认action_route可查询且动作键唯一。
+3. 在rebuild_device_review.sql中用ROW_NUMBER按rejection_reason_order选择每条关系的首个拒绝原因。
+4. 用UNION ALL把未拒绝关系写成两个方向的eligible_edge，并从状态合格且归属一致的事件建立active_seed。
+5. 使用WITH RECURSIVE扩展device_path候选，通过路径字符串阻止重复设备并以max_depth停止扩展。
+6. 按risk_score降序、depth升序、evidence_path升序的窗口排序裁决同一种子和设备的唯一证据。
+7. 将最佳路径连接device_registry和queue_actions，再连接action_route得到责任团队、案件优先级、复核时限和due_at_utc。
+8. 通过sqlite3的CSV模式导出risk_paths.csv、action_queue.csv和rejected_links.csv，并查询PRAGMA integrity_check确认派生库可用。
