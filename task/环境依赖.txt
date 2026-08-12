@@ -1,7 +1,7 @@
 任务支持Windows11本机、macOS13及主流64位Linux。主软件为SQLite3.40或更高兼容版本，本次锁定SQLite3.51.2；必须真实执行递归CTE、窗口函数、临时策略表、CSV原生导入、日期计算与数据库完整性查询。文本检查或用Node.js重算路径不能替代SQLite。
 
-辅助工具为Node.js24和npm，用于复制数据库、读取JSON策略、调用SQLite命令行并整理导出文件。Windows11直接使用sqlite3.exe，不依赖WSL、Linux容器、Bash或POSIX专用接口。正式运行只访问input_data中的本地文件，不连接账号、设备或风控服务，也不加载SQLite外部扩展。
+辅助工具为Node.js24和npm，用于复制数据库、读取JSON策略、调用SQLite命令行并整理导出文件。Windows11直接使用sqlite3.exe。正式运行只访问input_data中的本地文件，不连接账号、设备或风控服务，也不加载SQLite外部扩展。
 
-普通用户账户需要读取database、rules、starter和tools并写入output的权限。建议预留1GB内存和500MB磁盘，单次入口超时为30秒，无需GPU或管理员权限。SQLite属于公有领域，Node.js使用开源许可，输入材料均为虚构并已脱敏。
+普通用户账户需要读取database、rules、starter和tools并写入output的权限。单核CPU、1GB内存和500MB磁盘足够处理本题数据，单次入口超时为30秒，无需GPU或管理员权限。输入材料均为虚构并已脱敏。
 
 动作路由缺项会使高风险设备无法分派到责任团队，入口应停止交付并清理未完成的数据库和报告。计算时不得提前舍入路径置信度，否则临界风险可能落入错误的动作档位。

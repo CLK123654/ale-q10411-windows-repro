@@ -1,4 +1,7 @@
+总分100分
+
 检查项：交付结构与源表保全
+分值：12分
 标准答案：交付device_risk_review.db、sql/rebuild_device_review.sql及reports中的risk_paths.csv、action_queue.csv和rejected_links.csv。派生库保留四张源表，并有action_route、rejected_link、eligible_edge、active_seed、device_path、account_risk和action_queue。
 关键字段：output/device_risk_review.db、output/sql/rebuild_device_review.sql、sqlite_schema
 容差：SQL注释、缩进、临时表名和CTE拆分允许不同，交付路径及业务表名固定。
@@ -10,6 +13,7 @@
 所属层级：L1任务指令遵循层
 
 检查项：三份业务输入与SQLite会话
+分值：12分
 标准答案：risk_graph.db提供图谱事实，graph_policy.json提供关系和传播规则，action_routes.csv提供动作路由；入口将策略和路由装入执行交付SQL的同一SQLite连接。
 关键字段：database/risk_graph.db、rules/graph_policy.json、rules/action_routes.csv、action_route
 容差：允许用临时表或持久表承载策略，字段值必须来自当前输入，Node.js只做编排。
@@ -21,6 +25,7 @@
 所属层级：L3输入数据导入与完整性层
 
 检查项：关系拒绝与双向展开
+分值：16分
 标准答案：对每条device_link_event分别评估置信度、关系类型、两端账号状态和设备状态，候选原因按graph_policy.json中rejection_reason_order取首项。没有拒绝原因的关系写入两个相反方向。
 关键字段：rejected_link.edge_id、rejected_link.reason、eligible_edge.from_device_id、eligible_edge.to_device_id
 容差：按edge_id与方向主键比较，行序不计分；原因次序来自graph_policy.json的rejection_reason_order。
@@ -32,6 +37,7 @@
 所属层级：L4数据清洗与质量控制层
 
 检查项：递归路径与候选裁决
+分值：25分
 标准答案：active_seed只保留账号、设备状态和归属关系均符合策略的种子。device_path按seed_incident_id和device_id唯一，路径内没有重复设备且depth不超过max_depth。同一主键的候选路径按传播分降序、深度升序和路径字面升序保留首项。
 关键字段：active_seed.incident_id、device_path.seed_incident_id、device_path.device_id、device_path.depth、device_path.evidence_path
 容差：非最佳候选可以用CTE或临时对象保存；最终路径必须依据当前图谱和策略排序复算。
@@ -43,6 +49,7 @@
 所属层级：L6领域计算与专业规则层
 
 检查项：风险分与处置路由
+分值：25分
 标准答案：risk_paths.csv中的传播分按seed_weight、路径confidence乘积和propagation_decay计算。action_queue按风险分降序、account_id和device_id稳定排序，动作取queue_actions的最高可用档位；责任团队、案件优先级、复核分钟和due_at_utc来自action_routes.csv与种子时间。
 关键字段：path_confidence、risk_score、action、owner_team、case_priority、review_sla_minutes、due_at_utc
 容差：path_confidence按4位、risk_score按2位比较；时间必须是等价UTC时刻，CSV行序只对queue_rank有意义。
@@ -54,6 +61,7 @@
 所属层级：L5多源关联与字段一致性层
 
 检查项：数据库与报告交接一致性
+分值：10分
 标准答案：risk_paths.csv对应account_risk，action_queue.csv对应action_queue，rejected_links.csv对应rejected_link；三份报告的主键、数值、路径和路由字段与数据库相同。
 关键字段：seed_incident_id、device_id、edge_id、queue_rank及三张派生表的全部导出列
 容差：CSV换行符可为LF或CRLF，浮点显示可省略末尾零，业务值按标答规定的精度比较。

@@ -1,0 +1,71 @@
+{
+  "schema_version": 1,
+  "task_id": "10411",
+  "change_scope": "score_environment_text_only_change",
+  "result": "PASS",
+  "score": {
+    "total_declared": 100,
+    "item_count": 6,
+    "items": [
+      {
+        "name": "交付结构与源表保全",
+        "points": 12
+      },
+      {
+        "name": "三份业务输入与SQLite会话",
+        "points": 12
+      },
+      {
+        "name": "关系拒绝与双向展开",
+        "points": 16
+      },
+      {
+        "name": "递归路径与候选裁决",
+        "points": 25
+      },
+      {
+        "name": "风险分与处置路由",
+        "points": 25
+      },
+      {
+        "name": "数据库与报告交接一致性",
+        "points": 10
+      }
+    ],
+    "points_sum": 100
+  },
+  "prompt_coverage_review": {
+    "completed": true,
+    "semantic_change_required": false,
+    "conclusion": "交付结构、三份输入、关系拒绝、递归路径、风险路由和数据库报告一致性均有对应评分项"
+  },
+  "environment_coverage": {
+    "operating_system": true,
+    "primary_software_and_version": true,
+    "code_execution_dependency": true,
+    "cpu": true,
+    "gpu": true,
+    "disk": true,
+    "timeout": true,
+    "license_removed": true
+  },
+  "environment_license_text_present": false,
+  "field_name_count": 17,
+  "ale_csv_column_count": 19,
+  "attachment_sha256_before": {
+    "输入数据包.zip": "f2428e05e16a29933078607d79d8ce5d302eb4af3dabf04090332e5a3d93024b",
+    "reference.zip": "487653834fdc5bcc365dd295951b840e5bfd1886dba3e911138883da20c63a1a",
+    "关键标准答案.xlsx": "fe8ecc93636d8ce50aff182a54c5dd049f4f03be5b41fb324da2d69833006b9c",
+    "任务规格转化.xlsx": "76668c84e01f55eb51cd98fa35c39fcc614409ab3b21112de0574fe06a35c0f3"
+  },
+  "attachment_sha256_after": {
+    "输入数据包.zip": "f2428e05e16a29933078607d79d8ce5d302eb4af3dabf04090332e5a3d93024b",
+    "reference.zip": "487653834fdc5bcc365dd295951b840e5bfd1886dba3e911138883da20c63a1a",
+    "关键标准答案.xlsx": "fe8ecc93636d8ce50aff182a54c5dd049f4f03be5b41fb324da2d69833006b9c",
+    "任务规格转化.xlsx": "76668c84e01f55eb51cd98fa35c39fcc614409ab3b21112de0574fe06a35c0f3"
+  },
+  "attachments_unchanged": true,
+  "windows_rerun_required": false,
+  "lark_called": false,
+  "online_ai_detection_used_as_conclusion": false
+}
