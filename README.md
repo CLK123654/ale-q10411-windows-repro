@@ -1,5 +1,3 @@
-# SQLite device risk routing
+# 设备图谱风险传播与处置路由
 
-This repository contains one self-contained ALE task. The Windows workflow installs official SQLite3.51.2, verifies the four final artifact hashes, and executes the submitted SQL in two clean directories.
-
-The business task is written in Chinese under task. Candidate inputs and the reference delivery are under artifacts. Verification helpers are separate from candidate-facing files.
+任务使用SQLite重建设备关系图，筛除无效关系，计算高风险事件的传播路径，并按策略生成处置队列与调查报告。
