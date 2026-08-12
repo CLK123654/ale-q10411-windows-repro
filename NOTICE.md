@@ -1,1 +1,1 @@
-All example identities and events are fictional and created for a security operations exercise. SQLite is in the public domain.
+The account and device fields in this task have been de-identified. SQLite is in the public domain.
