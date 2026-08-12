@@ -21,24 +21,24 @@
 所属层级：L3输入数据导入与完整性层
 
 检查项：关系拒绝与双向展开
-标准答案：rejected_link按edge_id包含E04、E05、E06、E07，对应原因依次为low_confidence、link_type_not_allowed、endpoint_account_disabled、endpoint_device_inactive。eligible_edge包含其余关系的两个方向。
+标准答案：对每条device_link_event分别评估置信度、关系类型、两端账号状态和设备状态，候选原因按graph_policy.json中rejection_reason_order取首项。没有拒绝原因的关系写入两个相反方向。
 关键字段：rejected_link.edge_id、rejected_link.reason、eligible_edge.from_device_id、eligible_edge.to_device_id
 容差：按edge_id与方向主键比较，行序不计分；原因次序来自graph_policy.json的rejection_reason_order。
 失败边界：一条关系重复拒绝，原因优先级错误，失效端点进入合格关系，或合格关系漏掉任一方向。
 可观察证据：rejected_links.csv、eligible_edge、源关系表和策略文件。
-客观硬性标准：四条拒绝关系的身份和原因全部正确，其余每条关系恰有两个相反方向。
-阈值：拒绝集合与方向集合均完全匹配。
+客观硬性标准：拒绝主键及原因可从当前关系与策略逐项复算，所有合格关系均有两个相反方向。
+阈值：拒绝裁决和方向展开均与输入规则相符。
 优先级：高权重项
 所属层级：L4数据清洗与质量控制层
 
 检查项：递归路径与候选裁决
-标准答案：active_seed只包含I9001和I9002。device_path按seed_incident_id和device_id唯一，路径内没有重复设备且depth不超过max_depth。I9001到D102采用D100>D102，I9002到D403采用D400>D401>D403，I9002到D404采用D400>D401>D403>D404。
+标准答案：active_seed只保留账号、设备状态和归属关系均符合策略的种子。device_path按seed_incident_id和device_id唯一，路径内没有重复设备且depth不超过max_depth。同一主键的候选路径按传播分降序、深度升序和路径字面升序保留首项。
 关键字段：active_seed.incident_id、device_path.seed_incident_id、device_path.device_id、device_path.depth、device_path.evidence_path
-容差：非最佳候选可以用CTE或临时对象保存；最终路径按传播分、深度和字面顺序比较。
+容差：非最佳候选可以用CTE或临时对象保存；最终路径必须依据当前图谱和策略排序复算。
 失败边界：失效种子进入传播，路径回环或越界，同一种子和设备重复，或按发现顺序选择较差路径。
 可观察证据：WITH RECURSIVE语句、窗口排序、device_path和risk_paths.csv。
-客观硬性标准：种子集合、设备主键集合、深度边界、路径唯一性和三条重点路径全部正确。
-阈值：五类结果全部吻合。
+客观硬性标准：有效种子可从源表与策略复算，路径满足无环、深度和唯一性要求，保留记录符合排序规则。
+阈值：所有种子与设备主键都满足传播和路径裁决规则。
 优先级：高权重项
 所属层级：L6领域计算与专业规则层
 
